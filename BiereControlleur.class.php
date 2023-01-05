@@ -27,12 +27,30 @@ class BiereControlleur
 	 */
 	public function getAction(Requete $requete)
 	{
+		
 		if(isset($requete->url_elements[0]) && is_numeric($requete->url_elements[0]))	// Normalement l'id de la biere 
 		{
 			$id_biere = (int)$requete->url_elements[0];
 			
-            $this->retour["data"] = $this->getBiere($id_biere);
-
+			if(isset($requete->url_elements[1]))
+			{
+				switch ($requete->url_elements[1]) {
+					case 'note':
+						// Retourner la note
+						break;
+					case 'commentaire':
+							// Retourner les commentaires...
+							break;
+						
+					default:
+						//erreur
+						break;
+				}
+			}
+			else
+			{
+				$this->retour["data"] = $this->getBiere($id_biere);
+			}
 		} 
 		else 
 		{
@@ -76,6 +94,36 @@ class BiereControlleur
 		{
 			$this->retour['erreur'] = $this->erreur(401);
 		}
+		else	// Donc autorisé
+		{
+			if(isset($requete->url_elements[0]) && is_numeric($requete->url_elements[0]))	// Normalement l'id de la biere 
+			{
+				$id_biere = (int)$requete->url_elements[0];
+			
+				if(isset($requete->url_elements[1]))
+				{
+					switch ($requete->url_elements[1]) {
+						case 'note':
+							// Ajouter une  note
+							break;
+						case 'commentaire':
+								// Ajouter un commentaire
+								break;
+							
+						default:
+							//erreur
+							break;
+					}
+				}
+			}
+			else
+			{
+				$this->retour['data'] = $this->ajouterUneBiere($requete->parametres);
+
+			}
+			//var_dump($requete);
+			
+		}
 		
 		return $this->retour;
 	}
@@ -109,7 +157,8 @@ class BiereControlleur
 	private function getBiere($id_biere)
 	{
 		$res = Array();
-
+		$oBiere = new Biere();
+		$res = $oBiere->getBiere($id_biere);
 		return $res; 
 	}
 	
@@ -192,6 +241,8 @@ class BiereControlleur
 	private function ajouterUneBiere($data)
 	{
 		$res = Array();
+		$oBiere = new Biere();
+		$res = $oBiere->ajouterBiere($data);
 		
 		return $res; 
 	}
